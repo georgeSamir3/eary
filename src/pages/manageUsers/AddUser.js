@@ -4,6 +4,7 @@ import Form from "react-bootstrap/Form";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { getAuthUser } from "../../helper/Storage";
+import AlertError from "../../shared/alertError";
 const AddUser = () => {
   const [user, setUser] = useState({
     name: "",
@@ -17,6 +18,8 @@ const AddUser = () => {
   const auth = getAuthUser();
   const token = auth.tokens.token;
 
+  const [errors, setErrors] = useState([]);
+
   const addUser = (e) => {
     e.preventDefault();
     axios.post("http://localhost:5000/api/users-management",JSON.stringify(user),{
@@ -29,6 +32,8 @@ const AddUser = () => {
     })
     .catch((err) => {
       console.log(err);
+      setErrors(err.response.data.errors);
+
     });
     console.log(user)
   };
@@ -39,6 +44,7 @@ const AddUser = () => {
   return (
     <div style={{ width: "60%", margin: "30px auto" }}>
       <h1>Add User</h1>
+      <AlertError errors={errors}></AlertError>
       <Form onSubmit={addUser} className="text-center py-2">
         <Form.Group className="mb-3">
           <Form.Control

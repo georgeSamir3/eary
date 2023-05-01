@@ -4,24 +4,42 @@ import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import { getAuthUser } from "../../helper/Storage";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AlertError from "../../shared/alertError";
-const AddQuestion = () => {
-  const navigate = useNavigate();
+
+const UpdateQuestion = () => {
+  let { id } = useParams();
   const auth = getAuthUser();
   const token = auth.tokens.token;
+
+  const [errors, setErrors] = useState([]);
+
+  const [allQuestions, setAllQuestions] = useState([]);
+  const [status, setStatus] = useState("active");
   const [questionName, setQuestionName] = useState("");
   const [questionText, setQuestionText] = useState("");
   const [audioFile, setAudioFile] = useState(null);
-  const [status, setStatus] = useState("active");
   const [answers, setAnswers] = useState([
     { text: "", priority: "", isValid: false },
     { text: "", priority: "", isValid: false },
     { text: "", priority: "", isValid: false },
     { text: "", priority: "", isValid: false },
   ]);
-  const [errors, setErrors] = useState([]);
-  
+
+  // const [currQuestion, setCurrQuestion] = useState();
+
+  const getQuestion = () => {
+    const question = allQuestions.find(
+      (question) => question.id === Number(id)
+    );
+    // console.log("question:", question);
+    // setCurrQuestion(question);
+    setQuestionName(question.name);
+    setQuestionText(question.question);
+    setAudioFile(question.audio_file);
+    setAnswers(question.answers);
+    // console.log(audioFile)
+  };
   const handleAnswerChange = (index, field, value) => {
     setAnswers((prevState) => {
       const updatedAnswers = [...prevState];
@@ -29,11 +47,11 @@ const AddQuestion = () => {
       return updatedAnswers;
     });
   };
-
   const handleFileChange = (event) => {
-    setAudioFile(event.target.files[0]);
+    if (event.target.files.length > 0) {
+      setAudioFile(event.target.files[0]);
+    }
   };
-
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -49,9 +67,9 @@ const AddQuestion = () => {
     data.append("status", status);
 
     const config = {
-      method: "post",
+      method: "put",
       maxBodyLength: Infinity,
-      url: "http://127.0.0.1:5000/api/questions",
+      url: `http://127.0.0.1:5000/api/questions/${id}`,
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
@@ -68,10 +86,33 @@ const AddQuestion = () => {
         console.log(error);
         setErrors(error.response.data.errors);
       });
-    if (!errors) {
-      navigate("/");
-    }
   };
+  const getAllQuestions = () => {
+    axios
+      .get("http://localhost:5000/api/questions", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setAllQuestions(response.data.questions);
+      })
+      .catch((error) => {
+        console.log(error);
+        setErrors(error.response.data.errors);
+      });
+  };
+
+  useEffect(() => {
+    getAllQuestions();
+  }, []);
+
+  useEffect(() => {
+    if (allQuestions.length > 0) {
+      getQuestion();
+    }
+  }, [id, allQuestions]);
 
   return (
     <div className="login-container">
@@ -155,11 +196,11 @@ const AddQuestion = () => {
           />
         </Form.Group>
         <Button className="btn btn-dark w-100" variant="primary" type="submit">
-          Add New Question
+          Update Question
         </Button>
       </Form>
     </div>
   );
 };
 
-export default AddQuestion;
+export default UpdateQuestion;

@@ -13,15 +13,19 @@ import Test from "./pages/testfolder/test";
 import User from "./middleware/User";
 import ManageQuestions from "./pages/manageQuestions/ManageQuestions";
 import AddQuestion from "./pages/manageQuestions/addQuestion";
+import MyProfile from "./pages/my profile/MyProfile";
+import UpdateQuestion from "./pages/manageQuestions/UpdateQuestion";
+import SubmissionsDetails from "./pages/submissionsDetails/submissionsDetails";
+import UserSubmissions from "./pages/submissionsDetails/userSubmissions";
 export const routes = createBrowserRouter([
   {
     path: "",
     element: <App />,
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
+      // {
+      //   path: "/",
+      //   element: <Home />,
+      // },
       //   {
       //     path: ":id",
       //     element: <UserDetails />,
@@ -41,7 +45,7 @@ export const routes = createBrowserRouter([
           },
         ],
       },
-      
+
       {
         element: <User></User>,
         children: [
@@ -49,21 +53,47 @@ export const routes = createBrowserRouter([
             path: "/test",
             element: <Test></Test>,
           },
+          {
+            path: "/myprofile",
+            element: <MyProfile></MyProfile>,
+          },
+          {
+            path: "/",
+            element: <Home />,
+          },
+          {
+            path: "/subDetails/:id",
+            element: <SubmissionsDetails></SubmissionsDetails>,
+          },
         ],
       },
+      // {
+      //   path:"/subDetails",
+      //   element:<User></User>,
+      //   children:[
+      //     {
+      //       path:":id",
+      //       element:<SubmissionsDetails></SubmissionsDetails>
+      //     }
+      //   ]
+      // },
       {
-        path:"/mngQuestions",
-        element:<Admin></Admin>,
-        children:[
+        path: "/mngQuestions",
+        element: <Admin></Admin>,
+        children: [
           {
-          path:"",
-          element:<ManageQuestions></ManageQuestions>,  
-        },
-        {
-          path:"add",
-          element:<AddQuestion></AddQuestion>,  
-        },
-        ]
+            path: "",
+            element: <ManageQuestions></ManageQuestions>,
+          },
+          {
+            path: "add",
+            element: <AddQuestion></AddQuestion>,
+          },
+          {
+            path: ":id",
+            element: <UpdateQuestion />,
+          },
+        ],
       },
       {
         path: "/mngUsers",
@@ -81,12 +111,16 @@ export const routes = createBrowserRouter([
             path: ":id",
             element: <UpdateUser />,
           },
+          {
+            path: "subDetails/:id",
+            element: <UserSubmissions/>,
+          },
         ],
       },
     ],
   },
   {
     path: "*",
-    element: <Navigate to={"/"} />,
+    element: <Navigate to={"/login"} />,
   },
 ]);

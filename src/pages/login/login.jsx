@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
@@ -6,6 +6,7 @@ import "./login.css";
 import axios from "axios";
 import { setAuthUser } from "../../helper/Storage";
 import { useNavigate } from "react-router-dom";
+import AlertError from "../../shared/alertError";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const Login = () => {
 
   const submitLogin = (e) => {
     e.preventDefault();
-    setLogin({ ...login, loading: true, err: [] });
+    setLogin({ ...login, err: [] });
     axios
       .post("http://localhost:5000/api/auth/login", {
         email: login.email,
@@ -32,23 +33,29 @@ const Login = () => {
       .then((resp) => {
         setLogin({ ...login, loading: false, err: [] });
         setAuthUser(resp.data);
-        checkUserAuthorized()
+        checkUserAuthorized();
       })
       .catch((errors) => {
-        console.log(errors);
-        setLogin({ ...login, loading: true, err: errors.response.data.errors });
+        console.log("errr", errors);
+        setLogin({ ...login, err: errors.response.data.errors });
       });
   };
+  useEffect(() => {
+    console.log("the errors",login.err);
+  }, [login.err]);
   if (!login) return <div></div>;
   console.log(login);
   return (
     <div className="login-container mt-5">
       <h1>Login form</h1>
-      {login.err.map((error, i) => {
+      {/* {login.err.map((error, i) => {
+        return(
         <Alert key={i} variant="danger">
-          {error.msg}
-        </Alert>;
-      })}
+          {console.log("error from alert",error)}
+          {error}
+        </Alert>);
+      })} */}
+      <AlertError errors={login.err}></AlertError>
       <Form onSubmit={submitLogin}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>

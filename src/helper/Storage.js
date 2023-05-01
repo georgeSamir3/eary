@@ -14,3 +14,8 @@ export const removeAuthUser=()=>{
     localStorage.removeItem("user");
     }
 }
+export const myProfile =()=>{
+  if (localStorage.getItem("profile")) {
+    return JSON.parse(localStorage.getItem("profile"));
+  }
+}

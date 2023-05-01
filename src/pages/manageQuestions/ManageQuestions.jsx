@@ -1,42 +1,46 @@
 import React, { useEffect, useState } from "react";
-import UserCard from "../../components/userCard/UserCard";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import axios from "axios";
 import { getAuthUser } from "../../helper/Storage";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
+import AlertError from "../../shared/alertError";
 const ManageQuestions = () => {
-  const [allUsers, setAllUsers] = useState([]);
+  const [allQuestions, setAllQuestions] = useState([]);
   const auth = getAuthUser();
   const token = auth.tokens.token;
+  const [errors, setErrors] = useState([]);
 
-  const deleteUser = (id) => {
+  const deleteQuestions = (id) => {
+    console.log("the fucking id" + id);
     axios
-      .delete(`http://localhost:5000/api/users-management/${id}`, {
+      .delete(`http://localhost:5000/api/questions/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
         console.log(response);
-        setAllUsers(allUsers.filter((user) => user.id !== id));
+        setAllQuestions(allQuestions.filter((user) => user.id !== id));
       })
       .catch((error) => {
         console.log(error);
+        setErrors(error.response.data.errors);
       });
   };
 
-  const getAllUsers = () => {
+  const getAllQuestions = () => {
     axios
-      .get("http://localhost:5000/api/users-management", {
+      .get("http://localhost:5000/api/questions", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
-        setAllUsers(response.data.users);
-        console.log(allUsers);
+        setAllQuestions(response.data.questions);
+        console.log(allQuestions);
+        console.log(response);
       })
       .catch((error) => {
         console.log(error);
@@ -44,26 +48,32 @@ const ManageQuestions = () => {
   };
 
   useEffect(() => {
-    getAllUsers();
+    getAllQuestions();
   }, []);
-
-  // useEffect(() => {
-  //   console.log("allUsers updated:", allUsers);
-  // }, [allUsers]);
+  useEffect(() => {
+    console.log(allQuestions);
+  }, [allQuestions]);
 
   return (
     <div>
       <ListGroup style={{ width: "60%", margin: "15px auto" }}>
-        <Link to={"/mngUsers/add"}><Button className="mt-3 mb-3">Create user</Button></Link>
-        {allUsers?.map((user, i) => {
+        <Link to={"/mngQuestions/add"}>
+          <Button className="mt-3 mb-3">Create Question</Button>
+        </Link>
+        <AlertError errors={errors}></AlertError>
+        {allQuestions?.map((Question, i) => {
+          console.log(Question.id)
           return (
             <ListGroupItem key={i}>
-              {/* <UserCard user={user}></UserCard> */}
               <Card>
-                <Card.Header>{user.name}</Card.Header>
+                <Card.Header>{Question.name}</Card.Header>
                 <Card.Body>
-                  <Card.Title>{user.email}</Card.Title>
-                  <Card.Text>{user.status + " " + user.phone}</Card.Text>
+                  <Card.Title>{Question.question}</Card.Title>
+                  <Card.Text>Status:{Question.status}</Card.Text>
+                  <Link
+                      style={{ textDecoration: "none" }}
+                      to={"/mngQuestions/" + Question.id}
+                    >
                   <Button
                     variant="primary"
                     style={{
@@ -72,24 +82,15 @@ const ManageQuestions = () => {
                       width: "48%",
                       marginRight: "1%",
                     }}
-                    
                   >
-                    <Link style={{textDecoration:"none"}} to={"/mngUsers/"+user.id}>
-                    update user
-                    </Link>
-                    
+                    {/* <Link
+                      style={{ textDecoration: "none" }}
+                      to={"/mngQuestions/" + Question.id}
+                    > */}
+                      update question
+                    {/* </Link> */}
                   </Button>
-                  {/* <Button
-                    variant="success"
-                    style={{
-                      backgroundColor: "lightgrey",
-                      color: "navy",
-                      width: "32%",
-                      marginLeft: "1%",
-                    }}
-                  >
-                    Update User
-                  </Button> */}
+                  </Link>
                   <Button
                     variant="danger"
                     style={{
@@ -99,10 +100,10 @@ const ManageQuestions = () => {
                       marginLeft: "1%",
                     }}
                     onClick={(e) => {
-                      deleteUser(user.id);
+                      deleteQuestions(Question.id);
                     }}
                   >
-                    Delete User
+                    Delete Question
                   </Button>
                 </Card.Body>
               </Card>

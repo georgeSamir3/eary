@@ -1,0 +1,10 @@
+.cardCon{
+    width: 45%;
+    margin: auto;
+    margin-top: 15vh;
+}
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

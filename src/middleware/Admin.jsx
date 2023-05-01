@@ -4,6 +4,7 @@ import { getAuthUser } from "../helper/Storage";
 
 const Guest = () => {
   const auth = getAuthUser();
+  console.log("auth is :",auth)
   return <>{auth && auth.user.type === "admin" ? <Outlet /> : <Navigate to={"/"} />}</>;
 };
 

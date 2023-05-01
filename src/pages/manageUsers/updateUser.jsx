@@ -5,11 +5,14 @@ import Alert from "react-bootstrap/Alert";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { getAuthUser } from "../../helper/Storage";
+import AlertError from "../../shared/alertError";
 
 const UpdateUser = () => {
   let { id } = useParams();
   const auth = getAuthUser();
   const token = auth.tokens.token;
+
+  const [errors, setErrors] = useState([]);
 
   const [user, setUser] = useState({
     name: "",
@@ -62,6 +65,8 @@ const UpdateUser = () => {
       })
       .catch((err) => {
         console.log(err);
+        setErrors(err.response.data.errors);
+
       });
   }, []);
 
@@ -72,6 +77,7 @@ const UpdateUser = () => {
   return (
     <div style={{ width: "60%", margin: "30px auto" }}>
       <h1>Update User</h1>
+      <AlertError errors={errors}></AlertError>
       <Form onSubmit={updateUser} className="text-center py-2">
         <Form.Group className="mb-3">
           <Form.Control

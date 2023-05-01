@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
@@ -6,14 +6,14 @@ import "../login/login.css";
 import axios from "axios";
 import { setAuthUser } from "../../helper/Storage";
 import { useNavigate } from "react-router-dom";
-
+import AlertError from "../../shared/alertError";
 const SignUP = () => {
   const navigate = useNavigate();
-  const checkUserAuthorized = () => {
-    if (true) {
-      navigate("/");
-    }
-  };
+  // const checkUserAuthorized = () => {
+  //   if (true) {
+  //     navigate("/");
+  //   }
+  // };
 
   const [register, setRegister] = useState({
     email: "",
@@ -37,7 +37,7 @@ const SignUP = () => {
       .then((resp) => {
         setRegister({ ...register, loading: false, err: [] });
         setAuthUser(resp.data);
-        checkUserAuthorized();
+        navigate("/");
       })
       .catch((errors) => {
         setRegister({
@@ -46,18 +46,23 @@ const SignUP = () => {
           err: errors.response.data.errors,
         });
         console.log(errors.response.data.errors);
-        console.log(register.err)
+        console.log(register.err);
       });
   };
-
+  useEffect(() => {
+    console.log(register.err);
+  }, [register.err]);
   return (
     <div className="login-container mt-5">
       <h1>Sign UP</h1>
-      {register.err.map((error, i) => {
+
+      {/* {register.err.map((error, i) => {
+        return(
         <Alert key={i} variant="danger">
-          {error.msg}
-        </Alert>;
-      })}
+          {error}
+        </Alert>);
+      })} */}
+      <AlertError errors={register.err}></AlertError>
 
       <Form onSubmit={submitRegister}>
         <Form.Group className="mb-3" controlId="formBasicName">
@@ -75,7 +80,7 @@ const SignUP = () => {
         <Form.Group className="mb-3" controlId="formBasicNum">
           <Form.Label>Phone number</Form.Label>
           <Form.Control
-            type="text"
+            type="number"
             placeholder="Enter number"
             value={register.phone}
             onChange={(e) =>

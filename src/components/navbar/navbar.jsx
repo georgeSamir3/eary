@@ -16,7 +16,7 @@ const NavBar = () => {
       <header>
         <nav className="nav">
           <a href="/" className="logo link">
-            logo
+            Eary
           </a>
 
           <div className="hamburger">
@@ -45,6 +45,7 @@ const NavBar = () => {
               </>
             )}
             {auth && (
+              <>
               <a
                 className="link"
                 style={{ cursor: "pointer" }}
@@ -52,6 +53,8 @@ const NavBar = () => {
               >
                 logout
               </a>
+              <Link className="link" to={"/myprofile"}>my profile</Link>
+              </>
             )}
           </div>
         </nav>
