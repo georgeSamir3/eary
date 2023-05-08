@@ -6,8 +6,9 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { getAuthUser } from "../../helper/Storage";
 import AlertError from "../../shared/alertError";
-
+import { useNavigate } from "react-router-dom";
 const UpdateUser = () => {
+  const navigate = useNavigate();
   let { id } = useParams();
   const auth = getAuthUser();
   const token = auth.tokens.token;
@@ -43,6 +44,7 @@ const UpdateUser = () => {
         console.log(err);
       });
     console.log(user);
+    navigate("/");
   };
 
   useEffect(() => {
@@ -66,7 +68,6 @@ const UpdateUser = () => {
       .catch((err) => {
         console.log(err);
         setErrors(err.response.data.errors);
-
       });
   }, []);
 

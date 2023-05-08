@@ -3,10 +3,12 @@ import "./myprofile.css";
 import axios from "axios";
 import { getAuthUser } from "../../helper/Storage";
 import AlertError from "../../shared/alertError";
+import { Link } from "react-router-dom";
 
 const MyProfile = () => {
   const [profile, setProfile] = useState();
   const auth = getAuthUser();
+  const userId=auth.user.id
   const token = auth.tokens.token;
   const [errors, setErrors] = useState([]);
 
@@ -42,6 +44,7 @@ const MyProfile = () => {
         <p className="text">E-mail : {profile?.email}</p> {/* Add optional chaining */}
         <p className="text">Status : {profile?.status}</p> {/* Add optional chaining */}
         {/* <p className="text">Password : {profile.password}</p> */}
+        <Link to={`/updateProfile/`} style={{textDecoration:"none"}}><button style={{width:"35%",margin:"auto" }}><p style={{margin:"auto"}}>update profile</p></button></Link>
       </div>
     </div>
   );

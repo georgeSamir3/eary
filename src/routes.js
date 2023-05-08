@@ -17,6 +17,7 @@ import MyProfile from "./pages/my profile/MyProfile";
 import UpdateQuestion from "./pages/manageQuestions/UpdateQuestion";
 import SubmissionsDetails from "./pages/submissionsDetails/submissionsDetails";
 import UserSubmissions from "./pages/submissionsDetails/userSubmissions";
+import UpdateProfile from "./pages/my profile/UpdateProfile";
 export const routes = createBrowserRouter([
   {
     path: "",
@@ -64,6 +65,10 @@ export const routes = createBrowserRouter([
           {
             path: "/subDetails/:id",
             element: <SubmissionsDetails></SubmissionsDetails>,
+          },
+          {
+            path: "/updateProfile",
+            element: <UpdateProfile></UpdateProfile>,
           },
         ],
       },
